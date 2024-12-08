@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
           return userWithoutPassword;
         }
       });
-    res.json({ token, users: usersWithoutPassword, user: userActive });
+    res.json({ token, users: [userActive, ...usersWithoutPassword] });
   } else {
     res.status(401).send('Wrong sign in credentials');
   }

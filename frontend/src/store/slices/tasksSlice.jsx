@@ -7,18 +7,19 @@ export const tasksSlice = createSlice({
   initialState,
   reducers: {
     setTasks: (state, action) => {
-      state = action.payload;
+      return action.payload;
     },
     removeTask: (state, action) => {
       state = state.filter((task) => task._id !== action.payload);
+      return state;
     },
     addTask: (state, action) => {
-      state.push(action.payload);
+      return state.push(action.payload);
     },
     updateTask: (state, action) => {
       const { _id } = action.payload;
       const existingTask = state.indexOf((task) => task._id === _id);
-      state.splice(existingTask, 1, action.payload);
+      return state.splice(existingTask, 1, action.payload);
     },
   },
 });
