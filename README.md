@@ -3,8 +3,10 @@
 ## initiate server
 
 add .env file under this folder and add the following:
+```sh
 MONGO_URI=mongodb+srv://rasnicgal:uQVfYoCCFGWoYGTD@todocluster.vrvla.mongodb.net/todo-app?retryWrites=true&w=majority&appName=TodoCluster
 SECRET=123
+```
 
 ```sh
 cd backend
