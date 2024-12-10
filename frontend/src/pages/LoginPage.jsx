@@ -1,19 +1,21 @@
-import { useState } from 'react';
-import LoginCard from '../components/LoginCard/LoginCard';
-import LogInLayout from '../layouts/LogInLayout';
+import { useState, useEffect } from 'react';
+import LoginCard from '../components/LoginCard';
 import { validateLogin, validateRegister } from '../utils/utils';
-import { postWithoutAuth } from '../utils/http';
-import { useDispatch } from 'react-redux';
+import { postWithoutAuth } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
-import SnackbarActivation from '../components/Snackbar/Snackbar';
-import { setUsers } from '../store/slices/usersSlice';
+import SnackbarActivation from '../components/Snackbar';
 
 function LoginPage() {
   const [view, setView] = useState('login');
   const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('/tasks');
+    }
+  }, [navigate]);
 
   const validateLoginInput = (data) => {
     let validationResult;
@@ -22,45 +24,69 @@ function LoginPage() {
     } else {
       validationResult = validateRegister(data);
     }
-    if (validationResult) {
-      setError(validationResult);
-    } else if (view === 'login') {
-      login(data);
+    if (!validationResult) {
+      setError('');
+      if (view === 'login') {
+        postWithoutAuth('login', data)
+          .then((res) => {
+            if (res) {
+            
+              navigate('/tasks');
+            } else {
+              setError('Invalid email or password');
+            }
+          })
+          .catch((err) => {
+            setError(err.message);
+          });
+      } else {
+        register(data);
+      }
     } else {
-      register(data);
+      setError(validationResult);
     }
   };
-  const login = (data) => {
-    postWithoutAuth('login', data).then((res) => {
-      debugger;
-      dispatch(setUsers(res.users));
-      navigate('/');
-    });
-  };
+
   const register = (data) => {
     postWithoutAuth('register', data).then((res) => {
-      setOpen(true);
+      if (res) {
+        setOpen(true);
+        setView('login');
+      } else {
+        setError('User with the same email already exists');
+      }
     });
-    setView('login');
   };
+
   const handleClose = () => {
     setOpen(false);
   };
+
   return (
-    <LogInLayout>
-      <LoginCard
-        type={view}
-        onButtonClick={validateLoginInput}
-        onChangeType={() => setView(view === 'login' ? 'register' : 'login')}
-        error={error}
-      />
+    <div className='flex flex-col min-h-screen bg-gray-100 p-4'>
+      <h1 className='text-3xl font-bold mb-8 text-center'>
+        Task Management App
+      </h1>
+      <div className='flex flex-grow items-center justify-center'>
+        <div className='w-full max-w-md'>
+          <LoginCard
+            type={view}
+            onButtonClick={validateLoginInput}
+            onChangeType={() =>
+              setView(view === 'login' ? 'register' : 'login')
+            }
+            error={error}
+          />
+        </div>
+      </div>
       <SnackbarActivation
         text='Successfully registered'
         variant='success'
         openSnackbar={open}
         handleClose={handleClose}
       />
-    </LogInLayout>
+    </div>
   );
 }
+
 export default LoginPage;

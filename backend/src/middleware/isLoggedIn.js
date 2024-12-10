@@ -1,10 +1,7 @@
 const jwt = require('jsonwebtoken');
-const UserAuthModel = require('../models/UserAuthModel');
 
 module.exports = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  console.log(req.headers.authorization);
-
   if (!authHeader) {
     res.status(401).send('invalid credentials');
   } else {

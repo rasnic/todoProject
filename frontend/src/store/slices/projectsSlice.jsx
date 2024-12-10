@@ -9,20 +9,18 @@ export const projectsSlice = createSlice({
     setProjects: (state, action) => {
       return action.payload;
     },
-    updateProject: (state, action) => {
-      const { _id } = action.payload;
-      const existingProject = state.indexOf((project) => project._id === _id);
-      return state.splice(existingProject, 1, action.payload);
-    },
     addProject: (state, action) => {
-      return state.push(action.payload);
+      state.push(action.payload);
     },
     removeProject: (state, action) => {
-      return state.filter((project) => project._id !== action.payload);
+      state.filter((project) => project._id !== action.payload);
     },
   },
 });
 
-export const { setProjects } = projectsSlice.actions;
+export const getProjects = (state) => state.projects;
+
+export const { setProjects, updateProject, addProject, removeProject } =
+  projectsSlice.actions;
 
 export default projectsSlice.reducer;

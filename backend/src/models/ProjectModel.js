@@ -1,36 +1,11 @@
 const mongoose = require('mongoose');
 
 const ProjectSchema = new mongoose.Schema({
-  title: {
+  name: {
     type: String,
-  },
-  description: {
-    type: String,
-  },
-  status: {
-    type: Number,
-    default: 1,
-  },
-  priority: {
-    type: Number,
-  },
-  dueDate: {
-    type: Date,
-  },
-  assignee: {
-    type: Array,
-  },
-  created_by: {
-    type: String,
-  },
-  editable: {
-    type: Number,
-  },
-  deletable: {
-    type: Number,
   },
 });
 
-const ProjectModel = mongoose.model('task', ProjectSchema);
+const ProjectModel = mongoose.model('project', ProjectSchema);
 
 module.exports = ProjectModel;

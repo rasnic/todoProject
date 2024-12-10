@@ -19,6 +19,7 @@ export async function getHeaders() {
     return {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
+      user: localStorage.getItem('user'),
     };
   } catch (e) {
     return {};
@@ -53,7 +54,7 @@ export const postWithoutAuth = async (url, data) => {
     const response = await axios.post(`${endpoint}${url}`, data);
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.users[0]._id));
+      localStorage.setItem('user', response.data.user_id);
     }
     return response.data;
   } catch (error) {
@@ -75,7 +76,7 @@ export const remove = async (url) => {
   try {
     const headers = await getHeaders();
     const response = await axios.delete(`${endpoint}${url}`, { headers });
-    return response.data;
+    return response.status === 204;
   } catch (error) {
     console.error(error);
   }

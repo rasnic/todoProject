@@ -7,6 +7,7 @@ module.exports = async (req, res) => {
   const userExists = users.find(
     (user) => user.email === email && user.password === password
   );
+
   if (userExists) {
     const token = jwt.sign(
       {
@@ -14,18 +15,13 @@ module.exports = async (req, res) => {
       },
       process.env.SECRET
     );
-    let { password, last_activity, __v, ...userActive } = userExists.toObject();
-    const usersWithoutPassword = users
-      .filter((u) => u.email !== email)
-      .map((user) => {
-        const { password, __v, ...userWithoutPassword } = user.toObject();
-        if (userWithoutPassword.email === email) {
-          userActive = userWithoutPassword;
-        } else {
-          return userWithoutPassword;
-        }
-      });
-    res.json({ token, users: [userActive, ...usersWithoutPassword] });
+    const time = new Date();
+    userExists.last_activity = time;
+    await userExists.save();
+    res.json({
+      token,
+      user_id: userExists._id,
+    });
   } else {
     res.status(401).send('Wrong sign in credentials');
   }

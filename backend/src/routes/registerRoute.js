@@ -5,8 +5,12 @@ module.exports = async (req, res) => {
   const userExists = (await UserAuthModel.find()).filter(
     (user) => user.email === email
   );
+  console.log(userExists);
+
   if (userExists.length > 0) {
-    return res.status(400).json({ message: 'User with the same email already exists' });
+    return res
+      .status(400)
+      .json({ message: 'User with the same email already exists' });
   } else {
     const user = new UserAuthModel({ ...req.body, last_activity: new Date() });
     const newUser = await user.save();

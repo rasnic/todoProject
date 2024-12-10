@@ -1,16 +1,19 @@
 const mongoose = require('mongoose');
 
 const ActivitySchema = new mongoose.Schema({
+  object_id: {
+    type: String,
+  },
   change: {
     type: Object,
   },
   change_type: {
     type: Number,
   },
-  changed_by: {
+  user: {
     type: String,
   },
-  change_time: {
+  date: {
     type: Date,
   },
 });
